@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="dashboard-page">
+    <header class="topbar">
+        <a class="brand" href="dashboard.html">ITS Dashboard</a>
+
+        <div class="user-area">
+            <span id="user-summary">Caricamento...</span>
+            <button id="logout-button" class="button button-small button-danger" type="button">Logout</button>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <section class="welcome">
+            <p class="eyebrow">Area riservata</p>
+            <h1 id="welcome-title">Dashboard</h1>
+            <p id="welcome-text"></p>
+        </section>
+
+        <section class="dashboard-grid">
+            <article class="dashboard-card">
+                <h2>Profilo</h2>
+                <p><strong>Email:</strong> <span id="profile-email"></span></p>
+                <p><strong>Ruolo:</strong> <span id="profile-role"></span></p>
+            </article>
+
+            <article class="dashboard-card">
+                <h2>Nuove richieste del test</h2>
+                <p>
+                    Questa scheda è pronta per ospitare form, CRUD, filtri,
+                    ricerche, tabelle o altre funzionalità richieste dalla traccia.
+                </p>
+                <div id="future-feature"></div>
+            </article>
+
+            <article id="admin-card" class="dashboard-card admin-card hidden">
+                <span class="badge">Solo admin</span>
+                <h2>Gestione utenti</h2>
+                <p>Questa sezione usa un endpoint accessibile solo agli amministratori.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Ruolo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body"></tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
