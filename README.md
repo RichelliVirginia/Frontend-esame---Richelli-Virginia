@@ -1,129 +1,74 @@
-# Template esame ITS con frontend e backend separati
+# Academy Aziendale
+
+Progetto della prova pratica "Web Developer Full Stack - prova C".
+
+Il frontend è realizzato con HTML, CSS e JavaScript senza framework. Il backend è in PHP e comunica con il frontend tramite API JSON. I dati sono salvati in MySQL.
+
+## Avvio con XAMPP
+
+1. Avvia **Apache** e **MySQL** dal pannello XAMPP.
+2. Apri phpMyAdmin: `http://localhost/phpmyadmin`.
+3. Seleziona **Importa** e carica il file `backend/database.sql`.
+4. Apri `http://localhost/template_esame_api/frontend/`.
+
+Il file SQL crea automaticamente il database `academy_aziendale`, le tre tabelle e i dati iniziali.
+
+## Utenti di prova
+
+| Ruolo | Email | Password |
+|---|---|---|
+| Referente Academy | `academy@example.com` | `Password123!` |
+| Dipendente | `marco.bianchi@example.com` | `Dipendente123!` |
+| Dipendente | `giulia.verdi@example.com` | `Dipendente123!` |
+| Dipendente | `luca.neri@example.com` | `Dipendente123!` |
 
 ## Struttura
 
 ```text
-template_esame_api/
-├── frontend/
-│   ├── index.html
-│   ├── dashboard.html
-│   ├── assets/style.css
-│   └── js/
-│       ├── config.js
-│       ├── auth.js
-│       └── dashboard.js
-└── backend/
-    ├── api/
-    │   ├── register.php
-    │   ├── login.php
-    │   ├── me.php
-    │   ├── logout.php
-    │   └── admin/users.php
-    ├── config/
-    │   ├── bootstrap.php
-    │   └── database.php
-    ├── helpers/response.php
-    └── database.sql
+frontend/
+  index.html              login
+  register.html           registrazione dipendente
+  dashboard.html          applicazione CSR
+  assets/style.css
+  js/                     chiamate API e logica dell'interfaccia
+
+backend/
+  api/                    endpoint PHP che restituiscono JSON
+  config/                 connessione MySQL e autenticazione
+  helpers/                risposta JSON
+  database.sql            database e dati dimostrativi
+  Academy_API.postman_collection.json
 ```
 
-## Comunicazione tramite API
+## Funzionalità
 
-Il frontend non contiene PHP e utilizza `fetch()` per inviare e ricevere JSON.
+Il dipendente può vedere e filtrare solo i corsi assegnati a sé, consultare dettagli e scadenze e segnare un corso come completato.
 
-Endpoint disponibili:
+Il referente Academy può gestire corsi, vedere i dipendenti, creare/modificare/annullare assegnazioni, usare i filtri e consultare statistiche aggregate per mese e categoria.
 
-- `POST backend/api/register.php`
-- `POST backend/api/login.php`
-- `GET backend/api/me.php`
-- `POST backend/api/logout.php`
-- `GET backend/api/admin/users.php`
+Le autorizzazioni sono controllate anche dal backend. Un corso con assegnazioni non può essere eliminato e un corso non attivo non può essere usato per una nuova assegnazione.
 
-L'autenticazione usa una sessione PHP. Nel frontend ogni richiesta protetta usa:
+## API
 
-```javascript
-credentials: 'include'
-```
+Tutte le risposte sono in JSON. L'autenticazione usa una sessione PHP tramite cookie.
 
-## Installazione con XAMPP
+| Metodo | Endpoint | Accesso | Funzione |
+|---|---|---|---|
+| POST | `api/register.php` | Pubblico | Registra un dipendente |
+| POST | `api/login.php` | Pubblico | Login |
+| GET | `api/me.php` | Autenticato | Utente corrente |
+| POST | `api/logout.php` | Autenticato | Logout |
+| GET/POST/PUT/DELETE | `api/courses.php` | Referente | Gestione catalogo |
+| GET | `api/employees.php` | Referente | Elenco dipendenti |
+| GET | `api/assignments.php` | Autenticato | Elenco e filtri, limitato per ruolo |
+| POST/DELETE | `api/assignments.php` | Referente | Crea o annulla assegnazione |
+| PUT | `api/assignments.php` | Dipende dall'azione | Modifica, completa o annulla |
+| GET | `api/statistics.php` | Referente | Statistiche mensili |
 
-1. Copia `template_esame_api` dentro `htdocs`.
-2. Avvia Apache e MySQL.
-3. Apri phpMyAdmin.
-4. Importa `backend/database.sql`.
-5. Apri nel browser:
+Per provare le API con Postman, importa `backend/Academy_API.postman_collection.json`. Esegui prima **Login referente** o **Login dipendente**: Postman conserverà automaticamente il cookie di sessione.
 
-```text
-http://localhost/template_esame_api/frontend/
-```
+## Configurazione
 
-Non aprire direttamente il file HTML con doppio clic: deve essere servito tramite HTTP.
+La connessione predefinita è quella standard di XAMPP (`root` senza password). Se necessario, modifica `backend/config/database.php`.
 
-## Configurazione database
-
-Il file `backend/config/database.php` usa la configurazione standard di XAMPP:
-
-```php
-$username = 'root';
-$password = '';
-```
-
-## Configurazione indirizzo API
-
-Nel file `frontend/js/config.js` trovi:
-
-```javascript
-const API_BASE_URL = '../backend/api';
-```
-
-Se frontend e backend si trovano su indirizzi differenti, inserisci l'URL completo e aggiungi l'origine del frontend a `$allowedOrigins` in `backend/config/bootstrap.php`.
-
-## Esempio richiesta di registrazione
-
-```json
-{
-  "name": "Virginia",
-  "email": "virginia@example.com",
-  "password": "password123",
-  "confirmPassword": "password123",
-  "isAdmin": true
-}
-```
-
-## Nuova API protetta
-
-```php
-<?php
-declare(strict_types=1);
-
-require_once __DIR__ . '/../config/bootstrap.php';
-require_method('GET');
-require_auth();
-
-$query = $pdo->query('SELECT * FROM products');
-
-json_response([
-    'success' => true,
-    'products' => $query->fetchAll()
-]);
-```
-
-Per limitarla agli amministratori, sostituisci `require_auth()` con:
-
-```php
-require_admin();
-```
-
-## Chiamata dal frontend
-
-```javascript
-const response = await fetch(`${API_BASE_URL}/products.php`, {
-    credentials: 'include'
-});
-
-const data = await response.json();
-console.log(data.products);
-```
-
-## Nota di sicurezza
-
-La checkbox che permette la creazione diretta di un admin è presente perché richiesta per la simulazione. In un progetto reale la creazione degli amministratori dovrebbe essere riservata a un admin già autenticato.
+Il frontend usa `../backend/api` come indirizzo API. La configurazione si trova in `frontend/js/config.js`.

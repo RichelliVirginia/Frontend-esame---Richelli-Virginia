@@ -1,0 +1,88 @@
+{
+  "info": {
+    "name": "Academy Aziendale API",
+    "description": "Richieste dimostrative per la prova pratica. Eseguire prima un login per salvare il cookie di sessione.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost/template_esame_api/backend/api"
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticazione",
+      "item": [
+        {
+          "name": "Login referente",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"academy@example.com\",\n  \"password\": \"Password123!\"\n}" },
+            "url": "{{baseUrl}}/login.php"
+          }
+        },
+        {
+          "name": "Login dipendente",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"marco.bianchi@example.com\",\n  \"password\": \"Dipendente123!\"\n}" },
+            "url": "{{baseUrl}}/login.php"
+          }
+        },
+        { "name": "Utente corrente", "request": { "method": "GET", "url": "{{baseUrl}}/me.php" } },
+        { "name": "Logout", "request": { "method": "POST", "url": "{{baseUrl}}/logout.php" } }
+      ]
+    },
+    {
+      "name": "Corsi",
+      "item": [
+        { "name": "Elenco corsi", "request": { "method": "GET", "url": "{{baseUrl}}/courses.php" } },
+        { "name": "Filtra corsi attivi", "request": { "method": "GET", "url": "{{baseUrl}}/courses.php?active=1&category=Sicurezza" } },
+        {
+          "name": "Crea corso",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Introduzione alle API\",\n  \"description\": \"Corso dimostrativo\",\n  \"category\": \"Competenze digitali\",\n  \"durationHours\": 5,\n  \"isMandatory\": false,\n  \"isActive\": true\n}" },
+            "url": "{{baseUrl}}/courses.php"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assegnazioni",
+      "item": [
+        { "name": "Elenco assegnazioni", "request": { "method": "GET", "url": "{{baseUrl}}/assignments.php" } },
+        { "name": "Filtra assegnazioni", "request": { "method": "GET", "url": "{{baseUrl}}/assignments.php?status=completed&category=Sicurezza" } },
+        {
+          "name": "Crea assegnazione",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"courseId\": 4,\n  \"employeeId\": 2,\n  \"assignedOn\": \"2026-07-14\",\n  \"dueOn\": \"2026-08-14\",\n  \"status\": \"assigned\"\n}" },
+            "url": "{{baseUrl}}/assignments.php"
+          }
+        },
+        {
+          "name": "Completa assegnazione",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"id\": 2,\n  \"action\": \"complete\",\n  \"completedOn\": \"2026-07-14\"\n}" },
+            "url": "{{baseUrl}}/assignments.php"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistiche",
+      "item": [
+        { "name": "Riepilogo completo", "request": { "method": "GET", "url": "{{baseUrl}}/statistics.php" } },
+        { "name": "Riepilogo filtrato", "request": { "method": "GET", "url": "{{baseUrl}}/statistics.php?month=2026-05&category=Sicurezza" } }
+      ]
+    }
+  ]
+}

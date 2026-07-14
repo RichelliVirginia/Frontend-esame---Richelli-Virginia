@@ -19,7 +19,7 @@ if ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
 }
 
 header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -83,10 +83,31 @@ function require_admin(): void
 {
     require_auth();
 
-    if (($_SESSION['role'] ?? '') !== 'admin') {
+    if (($_SESSION['role'] ?? '') !== 'academy') {
         json_response([
             'success' => false,
             'message' => 'Accesso riservato agli amministratori.'
         ], 403);
     }
+}
+
+function require_academy(): void
+{
+    require_admin();
+}
+
+function positive_int(mixed $value): int
+{
+    return filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: 0;
+}
+
+function bool_value(mixed $value): int
+{
+    return filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+}
+
+function valid_date(string $date): bool
+{
+    $parsed = DateTime::createFromFormat('Y-m-d', $date);
+    return $parsed !== false && $parsed->format('Y-m-d') === $date;
 }

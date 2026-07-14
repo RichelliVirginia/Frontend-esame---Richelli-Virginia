@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $host = 'localhost';
-$dbname = 'esame_its_api';
+$dbname = 'academy_aziendale';
 $username = 'root';
 $password = '';
 

@@ -1,67 +1,436 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="assets/style.css">
-</head>
-<body class="dashboard-page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Academy Aziendale - Dashboard</title>
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body class="app-page">
     <header class="topbar">
-        <a class="brand" href="dashboard.html">ITS Dashboard</a>
-
-        <div class="user-area">
-            <span id="user-summary">Caricamento...</span>
-            <button id="logout-button" class="button button-small button-danger" type="button">Logout</button>
+      <a class="brand" href="dashboard.html"
+        ><span class="logo-mark logo-small"><p>🦁</p></span> Academy Aziendale
+        Bacheca</a
+      >
+      <div class="user-area">
+        <div>
+          <strong id="user-name">Caricamento...</strong
+          ><small id="user-role"></small>
         </div>
+        <button
+          id="logout-button"
+          class="button button-outline button-small"
+          type="button"
+        >
+          Esci
+        </button>
+      </div>
     </header>
 
-    <main class="dashboard-container">
-        <section class="welcome">
-            <p class="eyebrow">Area riservata</p>
-            <h1 id="welcome-title">Dashboard</h1>
-            <p id="welcome-text"></p>
+    <div class="app-shell">
+      <nav id="main-nav" class="sidebar" aria-label="Navigazione principale">
+        <button class="nav-button active" data-section="overview">
+          Panoramica
+        </button>
+        <button class="nav-button" data-section="my-courses">
+          I miei corsi
+        </button>
+        <button class="nav-button academy-only hidden" data-section="catalog">
+          Catalogo corsi
+        </button>
+        <button
+          class="nav-button academy-only hidden"
+          data-section="assignments"
+        >
+          Assegnazioni
+        </button>
+        <button class="nav-button academy-only hidden" data-section="employees">
+          Dipendenti
+        </button>
+        <button
+          class="nav-button academy-only hidden"
+          data-section="statistics"
+        >
+          Statistiche
+        </button>
+      </nav>
+
+      <main class="main-content">
+        <div id="global-message" class="message hidden" role="status"></div>
+
+        <section id="section-overview" class="page-section">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Dashboard</p>
+              <h1 id="welcome-title">Bentornato</h1>
+            </div>
+          </div>
+          <div id="summary-cards" class="summary-grid"></div>
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Prossime scadenze</h2>
+                <p>I corsi da completare per primi.</p>
+              </div>
+            </div>
+            <div id="deadline-list" class="course-list"></div>
+          </article>
         </section>
 
-        <section class="dashboard-grid">
-            <article class="dashboard-card">
-                <h2>Profilo</h2>
-                <p><strong>Email:</strong> <span id="profile-email"></span></p>
-                <p><strong>Ruolo:</strong> <span id="profile-role"></span></p>
-            </article>
-
-            <article class="dashboard-card">
-                <h2>Nuove richieste del test</h2>
-                <p>
-                    Questa scheda è pronta per ospitare form, CRUD, filtri,
-                    ricerche, tabelle o altre funzionalità richieste dalla traccia.
-                </p>
-                <div id="future-feature"></div>
-            </article>
-
-            <article id="admin-card" class="dashboard-card admin-card hidden">
-                <span class="badge">Solo admin</span>
-                <h2>Gestione utenti</h2>
-                <p>Questa sezione usa un endpoint accessibile solo agli amministratori.</p>
-
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nome</th>
-                                <th>Email</th>
-                                <th>Ruolo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-table-body"></tbody>
-                    </table>
-                </div>
-            </article>
+        <section id="section-my-courses" class="page-section hidden">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Formazione</p>
+              <h1>I miei corsi</h1>
+            </div>
+          </div>
+          <form id="employee-filters" class="filters panel" autocomplete="off">
+            <div>
+              <label for="my-status">Stato</label
+              ><select id="my-status">
+                <option value="">Tutti</option>
+                <option value="assigned">Assegnati</option>
+                <option value="completed">Completati</option>
+                <option value="expired">Scaduti</option>
+                <option value="cancelled">Annullati</option>
+              </select>
+            </div>
+            <div>
+              <label for="my-category">Categoria</label
+              ><select id="my-category">
+                <option value="">Tutte</option>
+              </select>
+            </div>
+            <div>
+              <label for="my-due-to">Scadenza entro</label
+              ><input type="date" id="my-due-to" />
+            </div>
+            <button class="button button-small" type="submit">Filtra</button>
+            <button
+              id="reset-my-filters"
+              class="button button-ghost button-small"
+              type="button"
+            >
+              Azzera
+            </button>
+          </form>
+          <div id="my-course-list" class="course-grid"></div>
         </section>
-    </main>
 
+        <section
+          id="section-catalog"
+          class="page-section hidden academy-section"
+        >
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Referente Academy</p>
+              <h1>Catalogo corsi</h1>
+            </div>
+            <button id="new-course-button" class="button" type="button">
+              Nuovo corso
+            </button>
+          </div>
+          <form id="course-form" class="panel form-panel hidden">
+            <input type="hidden" id="course-id" />
+            <div class="panel-heading">
+              <div>
+                <h2 id="course-form-title">Nuovo corso</h2>
+                <p>I campi con * sono obbligatori.</p>
+              </div>
+            </div>
+            <div class="form-row three-columns">
+              <div class="form-group">
+                <label for="course-title">Titolo *</label
+                ><input
+                  type="text"
+                  id="course-title"
+                  maxlength="150"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="course-category">Categoria *</label
+                ><input
+                  type="text"
+                  id="course-category"
+                  maxlength="100"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="course-duration">Durata in ore *</label
+                ><input
+                  type="number"
+                  id="course-duration"
+                  min="0.5"
+                  step="0.5"
+                  required
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="course-description">Descrizione</label
+              ><textarea id="course-description" rows="3"></textarea>
+            </div>
+            <div class="inline-options">
+              <label
+                ><input type="checkbox" id="course-mandatory" />
+                Obbligatorio</label
+              ><label
+                ><input type="checkbox" id="course-active" checked />
+                Attivo</label
+              >
+            </div>
+            <div class="form-actions">
+              <button class="button" type="submit">Salva corso</button
+              ><button
+                id="cancel-course-form"
+                class="button button-ghost"
+                type="button"
+              >
+                Annulla
+              </button>
+            </div>
+          </form>
+          <form id="catalog-filters" class="filters panel">
+            <div>
+              <label for="catalog-category">Categoria</label
+              ><select id="catalog-category">
+                <option value="">Tutte</option>
+              </select>
+            </div>
+            <div>
+              <label for="catalog-active">Stato</label
+              ><select id="catalog-active">
+                <option value="">Tutti</option>
+                <option value="1">Attivi</option>
+                <option value="0">Non attivi</option>
+              </select>
+            </div>
+            <button class="button button-small" type="submit">Filtra</button>
+          </form>
+          <div class="panel table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Corso</th>
+                  <th>Categoria</th>
+                  <th>Durata</th>
+                  <th>Tipo</th>
+                  <th>Stato</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody id="courses-table"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section
+          id="section-assignments"
+          class="page-section hidden academy-section"
+        >
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Referente Academy</p>
+              <h1>Assegnazioni</h1>
+            </div>
+            <button id="new-assignment-button" class="button" type="button">
+              Assegna corso
+            </button>
+          </div>
+          <form id="assignment-form" class="panel form-panel hidden">
+            <input type="hidden" id="assignment-id" />
+            <div class="panel-heading">
+              <div><h2 id="assignment-form-title">Nuova assegnazione</h2></div>
+            </div>
+            <div class="form-row four-columns">
+              <div class="form-group">
+                <label for="assignment-employee">Dipendente *</label
+                ><select id="assignment-employee" required></select>
+              </div>
+              <div class="form-group">
+                <label for="assignment-course">Corso *</label
+                ><select id="assignment-course" required></select>
+              </div>
+              <div class="form-group">
+                <label for="assignment-date">Data assegnazione *</label
+                ><input type="date" id="assignment-date" required />
+              </div>
+              <div class="form-group">
+                <label for="assignment-due">Scadenza *</label
+                ><input type="date" id="assignment-due" required />
+              </div>
+            </div>
+            <div id="edit-status-group" class="form-row hidden">
+              <div class="form-group">
+                <label for="assignment-status">Stato</label
+                ><select id="assignment-status">
+                  <option value="assigned">Assegnato</option>
+                  <option value="completed">Completato</option>
+                  <option value="cancelled">Annullato</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="assignment-completed">Data completamento</label
+                ><input type="date" id="assignment-completed" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="button" type="submit">Salva assegnazione</button
+              ><button
+                id="cancel-assignment-form"
+                class="button button-ghost"
+                type="button"
+              >
+                Annulla
+              </button>
+            </div>
+          </form>
+          <form id="assignment-filters" class="filters panel">
+            <div>
+              <label for="filter-employee">Dipendente</label
+              ><select id="filter-employee">
+                <option value="">Tutti</option>
+              </select>
+            </div>
+            <div>
+              <label for="filter-course">Corso</label
+              ><select id="filter-course">
+                <option value="">Tutti</option>
+              </select>
+            </div>
+            <div>
+              <label for="filter-category">Categoria</label
+              ><select id="filter-category">
+                <option value="">Tutte</option>
+              </select>
+            </div>
+            <div>
+              <label for="filter-status">Stato</label
+              ><select id="filter-status">
+                <option value="">Tutti</option>
+                <option value="assigned">Assegnati</option>
+                <option value="completed">Completati</option>
+                <option value="expired">Scaduti</option>
+                <option value="cancelled">Annullati</option>
+              </select>
+            </div>
+            <button class="button button-small" type="submit">Filtra</button>
+          </form>
+          <div class="panel table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Dipendente</th>
+                  <th>Corso</th>
+                  <th>Categoria</th>
+                  <th>Assegnato</th>
+                  <th>Scadenza</th>
+                  <th>Stato</th>
+                  <th>Azioni</th>
+                </tr>
+              </thead>
+              <tbody id="assignments-table"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section
+          id="section-employees"
+          class="page-section hidden academy-section"
+        >
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Referente Academy</p>
+              <h1>Dipendenti</h1>
+            </div>
+          </div>
+          <div class="panel table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Corsi assegnati</th>
+                  <th>Completati</th>
+                </tr>
+              </thead>
+              <tbody id="employees-table"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section
+          id="section-statistics"
+          class="page-section hidden academy-section"
+        >
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Referente Academy</p>
+              <h1>Statistiche formative</h1>
+            </div>
+          </div>
+          <form id="statistics-filters" class="filters panel">
+            <div>
+              <label for="stats-month">Mese</label
+              ><input type="month" id="stats-month" />
+            </div>
+            <div>
+              <label for="stats-category">Categoria</label
+              ><select id="stats-category">
+                <option value="">Tutte</option>
+              </select>
+            </div>
+            <div>
+              <label for="stats-employee">Dipendente</label
+              ><select id="stats-employee">
+                <option value="">Tutti</option>
+              </select>
+            </div>
+            <button class="button button-small" type="submit">
+              Applica filtri
+            </button>
+            <button
+              id="reset-stats"
+              class="button button-ghost button-small"
+              type="button"
+            >
+              Azzera
+            </button>
+          </form>
+          <div id="stats-summary" class="summary-grid"></div>
+          <div class="panel table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mese</th>
+                  <th>Categoria</th>
+                  <th>Assegnati</th>
+                  <th>Completati</th>
+                  <th>Completamento</th>
+                </tr>
+              </thead>
+              <tbody id="statistics-table"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="course-dialog" class="detail-dialog">
+      <button
+        id="close-dialog"
+        class="dialog-close"
+        type="button"
+        aria-label="Chiudi"
+      >
+        ×
+      </button>
+      <div id="dialog-content"></div>
+    </dialog>
     <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
     <script src="js/dashboard.js"></script>
-</body>
+  </body>
 </html>

@@ -9,8 +9,10 @@ json_response([
     'success' => true,
     'user' => [
         'id' => (int) $_SESSION['user_id'],
-        'name' => (string) $_SESSION['user_name'],
+        'firstName' => (string) $_SESSION['first_name'],
+        'lastName' => (string) $_SESSION['last_name'],
+        'name' => trim($_SESSION['first_name'] . ' ' . $_SESSION['last_name']),
         'email' => (string) $_SESSION['user_email'],
-        'role' => (string) $_SESSION['role']
-    ]
+        'role' => (string) $_SESSION['role'],
+    ],
 ]);
